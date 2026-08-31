@@ -4,7 +4,7 @@ Updated: 2026-08-31
 
 ## Current stage
 
-**M6: GitHub v0.2.0 — release candidate**
+**M6: GitHub v0.2.0 — released**
 
 ## Completed
 
@@ -77,9 +77,10 @@ Updated: 2026-08-31
 
 ## Publication status
 
-The public GitHub repository and verified `v0.1.0` tag are available at
-`however-yir/evidencelint`. The v0.2.0 GitHub Release is pending final CI and
-artifact verification. PyPI publication remains intentionally out of scope.
+The public GitHub repository and verified `v0.1.0` and `v0.2.0` tags are
+available at `however-yir/evidencelint`. The v0.2.0 GitHub Release assets and
+their published SHA256SUMS were verified after upload. PyPI publication remains
+intentionally out of scope.
 
 ## Next checkpoint
 
