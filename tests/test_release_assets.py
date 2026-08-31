@@ -51,6 +51,15 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertNotIn("git clone", workflow.lower())
         self.assertIn('report["schema_version"] == "evidencelint-report-v1"', workflow)
 
+    def test_release_smoke_uploads_short_lived_report_artifact(self) -> None:
+        workflow = (ROOT / ".github/workflows/release-smoke.yml").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("uses: actions/upload-artifact@v7", workflow)
+        self.assertIn("path: ${{ steps.audit.outputs.report }}", workflow)
+        self.assertIn("retention-days: 7", workflow)
+
     def test_readme_exposes_release_and_copyable_action_usage(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
 

@@ -36,3 +36,10 @@ jobs:
           assert len(report["findings"]) == 13
           assert all(item["status"] != "unavailable" for item in report["findings"])
           PY
+
+      - name: Upload the verified public report
+        uses: actions/upload-artifact@v7
+        with:
+          name: evidencelint-v0.1.0-smoke
+          path: ${{ steps.audit.outputs.report }}
+          retention-days: 7

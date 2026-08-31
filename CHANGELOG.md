@@ -10,6 +10,10 @@
   example to the README.
 - Add regression coverage for the public README usage contract, bringing the
   offline suite to 30 tests.
+- Retain the verified public Release-smoke report as a seven-day GitHub Actions
+  artifact using the Action's declared report output.
+- Add regression coverage for the Artifact delivery contract, bringing the
+  offline suite to 31 tests.
 
 ## 0.1.0 - 2026-08-31
 
