@@ -13,7 +13,7 @@ Updated: 2026-08-31
 - Project package and command entry point defined.
 - Read-only GitHub collector and versioned report schema implemented.
 - Eleven deterministic rules and three output formats implemented.
-- Thirty-four offline tests pass on Python 3.9 and Python 3.13.
+- Thirty-five offline tests pass on Python 3.9 and Python 3.13.
 - Live smoke checks passed against `ragproof`, `forgepilot-studio`, and an
   authorized private repository without cloning or mutation.
 - Check-run and owned-repository pagination implemented beyond 100 items.
@@ -67,6 +67,8 @@ Updated: 2026-08-31
   least-privilege publish path with Python 3.9/3.13 candidate verification.
 - Package/tag version matching is isolated in a source-distributed helper with
   offline matching and mismatch regressions.
+- Future wheel and source distributions receive a published `SHA256SUMS` that
+  is verified before installation on either supported Python edge.
 
 ## Publication status
 

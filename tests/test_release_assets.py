@@ -78,6 +78,18 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertIn("--verify-tag", workflow)
         self.assertNotIn("pypi", workflow.lower())
 
+    def test_future_release_publishes_verified_distribution_checksums(self) -> None:
+        workflow = (ROOT / ".github/workflows/release.yml").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn(
+            "sha256sum evidencelint-*.whl evidencelint-*.tar.gz > SHA256SUMS",
+            workflow,
+        )
+        self.assertIn("sha256sum --check SHA256SUMS", workflow)
+        self.assertIn("path: dist/*", workflow)
+
     def test_readme_exposes_release_and_copyable_action_usage(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
 

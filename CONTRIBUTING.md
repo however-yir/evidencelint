@@ -23,6 +23,8 @@ Manual runs build and verify the candidate on Python 3.9 and 3.13 without
 publishing. A later `vX.Y.Z` tag must exactly match the package version before
 the workflow receives permission to create the GitHub Release. PyPI remains a
 separate, intentionally unsupported publication path.
+Candidate installation is preceded by verification of the generated
+`SHA256SUMS`; the same checksum file is included in tag-created Releases.
 
 ## Rule design
 

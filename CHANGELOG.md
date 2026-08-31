@@ -23,6 +23,10 @@
   and include that helper in source distributions.
 - Add matching-tag and mismatched-tag regressions, bringing the offline suite
   to 34 tests.
+- Generate `SHA256SUMS` for future wheel and source distributions, verify it
+  before candidate installation, and publish it with tag-created Releases.
+- Add regression coverage for checksum delivery, bringing the offline suite
+  to 35 tests.
 
 ## 0.1.0 - 2026-08-31
 
