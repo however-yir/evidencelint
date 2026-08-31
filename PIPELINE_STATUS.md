@@ -49,6 +49,8 @@ Updated: 2026-08-31
   passed a local equivalent live run against `ragproof`.
 - Development CI covers Python 3.9 and 3.13, compilation, warning-free package
   builds, clean-wheel installation, and Action smoke verification.
+- GitHub's official checkout, Python setup, and artifact upload integrations
+  use their Node.js 24-compatible v7 releases.
 - Warning-free wheel and source distributions were built with MIT SPDX metadata
   and `Requires-Python: >=3.9`.
 - A clean environment installed only the built wheel, passed dependency checks,

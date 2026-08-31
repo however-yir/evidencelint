@@ -21,7 +21,8 @@ publication is intentionally outside the v0.1.0 scope.
 
 1. Public repository created with reviewed description and topics.
 2. Initial commit pushed after confirming ignored local reports were not staged.
-3. Python, package, and Action smoke jobs passed on GitHub-hosted CI.
+3. Python, package, and Action smoke jobs passed on GitHub-hosted CI using
+   Node.js 24-compatible official Actions.
 4. Exact `v0.1.0` tag pushed from the verified default-branch commit.
 5. GitHub Release created with wheel and source-distribution assets.
 6. Repository, tag, Release assets, and default-branch checks read back through

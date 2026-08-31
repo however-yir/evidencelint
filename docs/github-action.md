@@ -32,7 +32,7 @@ jobs:
           token: ${{ github.token }}
 
       - name: Upload report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: evidencelint-report
           path: ${{ steps.evidencelint.outputs.report }}

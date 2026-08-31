@@ -60,3 +60,5 @@
   guidance without claiming an unpublished repository or package.
 - Build warning-free wheel and source distributions, then verify the wheel in
   clean Python 3.9 and Python 3.13 test paths.
+- Use the Node.js 24-compatible v7 releases of GitHub's official checkout,
+  Python setup, and artifact upload Actions.
