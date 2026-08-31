@@ -27,7 +27,7 @@ jobs:
         env:
           PYTHONPATH: src
       - name: Compile package and tests
-        run: python -m compileall -q src tests
+        run: python -m compileall -q src tests scripts
 
   package:
     runs-on: ubuntu-latest

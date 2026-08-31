@@ -6,7 +6,7 @@ Keep changes narrow and evidence-first.
 
 ```bash
 PYTHONPATH=src python3 -m unittest discover -s tests -v
-PYTHONPATH=src python3 -m compileall -q src tests
+PYTHONPATH=src python3 -m compileall -q src tests scripts
 python3 -m pip wheel --no-deps --wheel-dir dist .
 ```
 

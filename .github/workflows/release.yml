@@ -24,28 +24,7 @@ jobs:
       - name: Validate package and tag versions
         id: package
         shell: bash
-        run: |
-          python - <<'PY'
-          import os
-          import re
-          from pathlib import Path
-
-          pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
-          match = re.search(r'^version = "([^"]+)"$', pyproject, re.MULTILINE)
-          if match is None:
-              raise SystemExit("pyproject.toml does not expose a package version")
-
-          version = match.group(1)
-          if os.environ["GITHUB_REF_TYPE"] == "tag":
-              expected = f"v{version}"
-              if os.environ["GITHUB_REF_NAME"] != expected:
-                  raise SystemExit(
-                      f"tag {os.environ['GITHUB_REF_NAME']} does not match {expected}"
-                  )
-
-          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
-              output.write(f"version={version}\n")
-          PY
+        run: python scripts/release_version.py
 
       - name: Build wheel and source distribution
         run: |

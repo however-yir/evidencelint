@@ -19,6 +19,10 @@
   tag-only GitHub Release creation.
 - Add regression coverage for the future-Release contract, bringing the
   offline suite to 32 tests.
+- Extract tag/package version matching into a directly testable release helper
+  and include that helper in source distributions.
+- Add matching-tag and mismatched-tag regressions, bringing the offline suite
+  to 34 tests.
 
 ## 0.1.0 - 2026-08-31
 

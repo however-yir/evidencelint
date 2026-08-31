@@ -36,6 +36,7 @@ class ReleaseAssetTests(unittest.TestCase):
         workflow = (ROOT / ".github/workflows/ci.yml").read_text(encoding="utf-8")
 
         self.assertIn('python-version: ["3.9", "3.13"]', workflow)
+        self.assertIn("python -m compileall -q src tests scripts", workflow)
         self.assertIn("python -m pip wheel --no-deps --wheel-dir dist .", workflow)
         self.assertIn("evidencelint==0.1.0", workflow)
         self.assertIn("uses: ./", workflow)
@@ -66,6 +67,7 @@ class ReleaseAssetTests(unittest.TestCase):
         )
 
         self.assertIn("permissions: {}", workflow)
+        self.assertIn("python scripts/release_version.py", workflow)
         self.assertIn("build==1.6.0", workflow)
         self.assertIn('python-version: ["3.9", "3.13"]', workflow)
         self.assertIn("uses: actions/upload-artifact@v7", workflow)
@@ -101,6 +103,7 @@ class ReleaseAssetTests(unittest.TestCase):
             self.assertNotIn(f"]({path})", readme)
         self.assertIn("prune examples", manifest)
         self.assertIn("include examples/ragproof-report.json", manifest)
+        self.assertIn("include scripts/release_version.py", manifest)
 
 
 if __name__ == "__main__":
