@@ -29,6 +29,11 @@ GitHub-authored Actions are pinned to full commit identifiers. Update a pin
 only after reviewing the corresponding upstream release, and keep its version
 comment synchronized for auditability.
 
+Use a Policy only to document which evidence gaps are advisory for a concrete
+project. It must not hide a Finding, and every advisory rule needs a concise
+reason. Report comparisons are valid only within one repository and one rule
+set version.
+
 ## Rule design
 
 A rule should:

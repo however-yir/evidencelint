@@ -20,9 +20,17 @@ inputs:
     required: false
     default: evidencelint-report.md
   strict:
-    description: Exit non-zero when a rule is failed or missing
+    description: Exit non-zero for blockers, or only new blockers with a baseline
     required: false
     default: "false"
+  policy:
+    description: Optional local evidencelint-policy-v1 JSON file
+    required: false
+    default: ""
+  baseline:
+    description: Optional earlier JSON report for no-network comparison
+    required: false
+    default: ""
   token:
     description: GitHub token used only for read-only API requests
     required: false
@@ -37,7 +45,7 @@ runs:
   using: composite
   steps:
     - name: Set up Python
-      uses: actions/setup-python@v7
+      uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       with:
         python-version: "3.9"
 
@@ -49,6 +57,8 @@ runs:
         EVIDENCELINT_FORMAT: ${{ inputs.format }}
         EVIDENCELINT_OUTPUT: ${{ inputs.output }}
         EVIDENCELINT_STRICT: ${{ inputs.strict }}
+        EVIDENCELINT_POLICY: ${{ inputs.policy }}
+        EVIDENCELINT_BASELINE: ${{ inputs.baseline }}
         GITHUB_TOKEN: ${{ inputs.token }}
       run: |
         set -euo pipefail
@@ -72,19 +82,62 @@ runs:
           exit 2
         fi
 
-        arguments=(
-          scan "$repository"
-          --format "$EVIDENCELINT_FORMAT"
-          --output "$EVIDENCELINT_OUTPUT"
-        )
+        for input_name in EVIDENCELINT_POLICY EVIDENCELINT_BASELINE; do
+          input_value="${!input_name}"
+          if [[ -n "$input_value" && "$input_value" == *$'\n'* ]]; then
+            echo "EvidenceLint $input_name must be a single-line path." >&2
+            exit 2
+          fi
+        done
+
+        if [[ -n "$EVIDENCELINT_POLICY" && ! -f "$EVIDENCELINT_POLICY" ]]; then
+          echo "EvidenceLint policy file does not exist." >&2
+          exit 2
+        fi
+        if [[ -n "$EVIDENCELINT_BASELINE" && ! -f "$EVIDENCELINT_BASELINE" ]]; then
+          echo "EvidenceLint baseline file does not exist." >&2
+          exit 2
+        fi
+
         case "$EVIDENCELINT_STRICT" in
-          true) arguments+=(--strict) ;;
-          false) ;;
+          true) strict_arguments=(--strict) ;;
+          false) strict_arguments=() ;;
           *)
             echo "EvidenceLint strict must be true or false." >&2
             exit 2
             ;;
         esac
 
-        PYTHONPATH="$GITHUB_ACTION_PATH/src" python -m evidencelint "${arguments[@]}"
+        policy_arguments=()
+        if [[ -n "$EVIDENCELINT_POLICY" ]]; then
+          policy_arguments=(--policy "$EVIDENCELINT_POLICY")
+        fi
+
+        if [[ -n "$EVIDENCELINT_BASELINE" ]]; then
+          current_report="$RUNNER_TEMP/evidencelint-current-${GITHUB_RUN_ID:-local}.json"
+          scan_arguments=(
+            scan "$repository"
+            --format json
+            --output "$current_report"
+            "${policy_arguments[@]}"
+          )
+          PYTHONPATH="$GITHUB_ACTION_PATH/src" python -m evidencelint "${scan_arguments[@]}"
+          compare_arguments=(
+            compare "$EVIDENCELINT_BASELINE" "$current_report"
+            --format "$EVIDENCELINT_FORMAT"
+            --output "$EVIDENCELINT_OUTPUT"
+            "${policy_arguments[@]}"
+            "${strict_arguments[@]}"
+          )
+          PYTHONPATH="$GITHUB_ACTION_PATH/src" python -m evidencelint "${compare_arguments[@]}"
+        else
+          scan_arguments=(
+            scan "$repository"
+            --format "$EVIDENCELINT_FORMAT"
+            --output "$EVIDENCELINT_OUTPUT"
+            "${policy_arguments[@]}"
+            "${strict_arguments[@]}"
+          )
+          PYTHONPATH="$GITHUB_ACTION_PATH/src" python -m evidencelint "${scan_arguments[@]}"
+        fi
         printf 'report=%s\n' "$EVIDENCELINT_OUTPUT" >> "$GITHUB_OUTPUT"

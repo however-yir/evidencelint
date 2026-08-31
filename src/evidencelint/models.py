@@ -5,9 +5,11 @@ from enum import Enum
 from typing import Any
 
 
-REPORT_SCHEMA_VERSION = "evidencelint-report-v1"
-BATCH_SCHEMA_VERSION = "evidencelint-batch-report-v2"
+REPORT_SCHEMA_VERSION = "evidencelint-report-v2"
+BATCH_SCHEMA_VERSION = "evidencelint-batch-report-v3"
 RULE_SET_VERSION = "evidencelint-rules-v2"
+POLICY_SCHEMA_VERSION = "evidencelint-policy-v1"
+COMPARISON_SCHEMA_VERSION = "evidencelint-comparison-v1"
 
 
 class EvidenceStatus(str, Enum):
@@ -24,6 +26,11 @@ class ActionCategory(str, Enum):
     COLLECTION_BLOCKER = "collection_blocker"
     REVIEW_REQUIRED = "review_required"
     EVIDENCE_GAP = "evidence_gap"
+
+
+class PolicyLevel(str, Enum):
+    REQUIRED = "required"
+    ADVISORY = "advisory"
 
 
 @dataclass(frozen=True)
@@ -43,6 +50,26 @@ class Finding:
             "title": self.title,
             "detail": self.detail,
             "evidence": list(self.evidence) if include_evidence else [],
+        }
+
+
+@dataclass(frozen=True)
+class PolicyEvaluation:
+    schema_version: str
+    digest: str
+    source: str
+    advisory_rules: tuple[str, ...]
+    blocking_rule_ids: tuple[str, ...]
+    reasons: dict[str, str] = field(default_factory=dict)
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_version": self.schema_version,
+            "digest": self.digest,
+            "source": self.source,
+            "advisory_rules": list(self.advisory_rules),
+            "blocking_rule_ids": list(self.blocking_rule_ids),
+            "reasons": dict(sorted(self.reasons.items())),
         }
 
 
@@ -122,6 +149,7 @@ class RepositorySnapshot:
 class AuditReport:
     snapshot: RepositorySnapshot
     findings: tuple[Finding, ...]
+    policy: PolicyEvaluation | None = None
     schema_version: str = REPORT_SCHEMA_VERSION
     rule_set_version: str = RULE_SET_VERSION
 
@@ -133,7 +161,7 @@ class AuditReport:
 
     def to_dict(self) -> dict[str, Any]:
         include_evidence = self.snapshot.metadata.get("visibility") != "private"
-        return {
+        payload = {
             "schema_version": self.schema_version,
             "rule_set_version": self.rule_set_version,
             "snapshot": self.snapshot.summary_dict(),
@@ -144,6 +172,9 @@ class AuditReport:
                 for finding in self.findings
             ],
         }
+        if self.policy is not None:
+            payload["policy"] = self.policy.to_dict()
+        return payload
 
 
 @dataclass(frozen=True)

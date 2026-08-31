@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 
+from .comparison import ComparisonReport
 from .models import ActionCategory, AuditReport, BatchReport, EvidenceStatus
 
 
@@ -33,6 +34,16 @@ def render_batch(report: BatchReport, output_format: str) -> str:
     raise ValueError(f"unsupported output format: {output_format}")
 
 
+def render_comparison(report: ComparisonReport, output_format: str) -> str:
+    if output_format == "json":
+        return json.dumps(report.to_dict(), ensure_ascii=False, indent=2, sort_keys=True)
+    if output_format == "markdown":
+        return render_comparison_markdown(report)
+    if output_format == "text":
+        return render_comparison_text(report)
+    raise ValueError(f"unsupported output format: {output_format}")
+
+
 def render_text(report: AuditReport) -> str:
     snapshot = report.snapshot
     counts = report.status_counts()
@@ -55,6 +66,15 @@ def render_text(report: AuditReport) -> str:
         )
         for evidence in evidence_items:
             lines.append(f"  evidence: {evidence}")
+    if report.policy is not None:
+        lines.extend(
+            [
+                "",
+                "Policy: "
+                f"{report.policy.source}, advisory={len(report.policy.advisory_rules)}, "
+                f"blocking={len(report.policy.blocking_rule_ids)}",
+            ]
+        )
     return "\n".join(lines)
 
 
@@ -80,6 +100,20 @@ def render_markdown(report: AuditReport) -> str:
     for finding in report.findings:
         if finding.evidence and snapshot.metadata.get("visibility") != "private":
             lines.append(f"- `{finding.rule_id}`: " + ", ".join(f"`{item}`" for item in finding.evidence))
+    if report.policy is not None:
+        lines.extend(
+            [
+                "",
+                "## Policy",
+                "",
+                f"- Source: `{report.policy.source}`",
+                f"- Digest: `{report.policy.digest}`",
+                "- Advisory rules: "
+                + (", ".join(f"`{rule_id}`" for rule_id in report.policy.advisory_rules) or "none"),
+                "- Blocking rules: "
+                + (", ".join(f"`{rule_id}`" for rule_id in report.policy.blocking_rule_ids) or "none"),
+            ]
+        )
     return "\n".join(lines)
 
 
@@ -116,21 +150,21 @@ def render_batch_text(report: BatchReport) -> str:
         f"Repositories without actions: {repositories['without_actions']}",
         "",
     ]
-    for item in report.reports:
-        counts = item.status_counts()
-        repo_ci = item.snapshot.check_run_summary()
+    for audit_report in report.reports:
+        counts = audit_report.status_counts()
+        repo_ci = audit_report.snapshot.check_run_summary()
         lines.append(
-            f"{item.snapshot.repository}: checks={repo_ci['total']} "
+            f"{audit_report.snapshot.repository}: checks={repo_ci['total']} "
             f"verified={counts['verified']} partial={counts['partial']} "
             f"missing={counts['missing']} failed={counts['failed']} "
             f"unavailable={counts['unavailable']}"
         )
     if report.action_items():
         lines.extend(["", "Action queue:"])
-        for item in report.action_items():
+        for action_item in report.action_items():
             lines.append(
-                f"[{item.category.value.upper()}] {item.repository} "
-                f"{item.finding.rule_id} - {item.finding.detail}"
+                f"[{action_item.category.value.upper()}] {action_item.repository} "
+                f"{action_item.finding.rule_id} - {action_item.finding.detail}"
             )
     if report.failures:
         lines.extend(["", "Collection failures:"])
@@ -188,15 +222,15 @@ def render_batch_markdown(report: BatchReport) -> str:
                 "|---|---|---|---|",
             ]
         )
-        for item in matching:
-            payload = item.to_dict()
-            detail = item.finding.detail.replace("|", "\\|").replace("\n", " ")
+        for action_item in matching:
+            payload = action_item.to_dict()
+            detail = action_item.finding.detail.replace("|", "\\|").replace("\n", " ")
             evidence = ", ".join(
                 str(value).replace("|", "\\|").replace("\n", " ")
                 for value in payload["evidence"]
             )
             lines.append(
-                f"| `{item.repository}` | `{item.finding.rule_id}` | "
+                f"| `{action_item.repository}` | `{action_item.finding.rule_id}` | "
                 f"{detail} | {evidence} |"
             )
         lines.append("")
@@ -208,9 +242,9 @@ def render_batch_markdown(report: BatchReport) -> str:
             "|---|---:|---:|---:|---:|---:|---:|---:|",
         ]
     )
-    for item in report.reports:
-        counts = item.status_counts()
-        snapshot = item.snapshot
+    for audit_report in report.reports:
+        counts = audit_report.status_counts()
+        snapshot = audit_report.snapshot
         lines.append(
             f"| `{snapshot.repository}` | {snapshot.metadata.get('visibility', '')} | "
             f"{len(snapshot.check_runs)} | {counts['verified']} | {counts['partial']} | "
@@ -225,6 +259,8 @@ def render_batch_markdown(report: BatchReport) -> str:
 
 
 def strict_exit_code(report: AuditReport) -> int:
+    if report.policy is not None:
+        return 1 if report.policy.blocking_rule_ids else 0
     blocked = {EvidenceStatus.FAILED, EvidenceStatus.MISSING}
     return 1 if any(finding.status in blocked for finding in report.findings) else 0
 
@@ -233,3 +269,49 @@ def batch_strict_exit_code(report: BatchReport) -> int:
     if report.failures:
         return 1
     return 1 if any(strict_exit_code(item) for item in report.reports) else 0
+
+
+def comparison_strict_exit_code(report: ComparisonReport) -> int:
+    return 1 if report.new_blockers() else 0
+
+
+def render_comparison_text(report: ComparisonReport) -> str:
+    counts = report.counts()
+    lines = [
+        f"EvidenceLint comparison: {report.current.repository}",
+        f"Baseline SHA: {report.baseline.default_sha[:12]}",
+        f"Current SHA: {report.current.default_sha[:12]}",
+        f"Rule set: {report.current.rule_set_version}",
+        "Summary: " + ", ".join(f"{key}={value}" for key, value in counts.items() if value),
+        "",
+    ]
+    for change in report.changes:
+        if change.category.value != "unchanged":
+            lines.append(
+                f"[{change.category.value.upper()}] {change.rule_id}: "
+                f"{change.baseline.value} -> {change.current.value}"
+            )
+    return "\n".join(lines)
+
+
+def render_comparison_markdown(report: ComparisonReport) -> str:
+    lines = [
+        f"# EvidenceLint comparison: `{report.current.repository}`",
+        "",
+        f"- Baseline SHA: `{report.baseline.default_sha}`",
+        f"- Current SHA: `{report.current.default_sha}`",
+        f"- Rule set: `{report.current.rule_set_version}`",
+        f"- Policy digest: `{report.policy_digest}`",
+        "",
+        "| Category | Rule | Baseline | Current |",
+        "|---|---|---|---|",
+    ]
+    for change in report.changes:
+        if change.category.value != "unchanged":
+            lines.append(
+                f"| `{change.category.value}` | `{change.rule_id}` | "
+                f"`{change.baseline.value}` | `{change.current.value}` |"
+            )
+    if all(change.category.value == "unchanged" for change in report.changes):
+        lines.append("| `unchanged` | — | — | — |")
+    return "\n".join(lines)

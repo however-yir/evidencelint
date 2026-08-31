@@ -4,7 +4,7 @@ EvidenceLint includes a composite Action that reads the target repository
 through GitHub REST APIs. It does not use `actions/checkout`, clone the target,
 or execute target code.
 
-Use the published `v0.1.0` tag:
+Use the published `v0.2.0` tag:
 
 ```yaml
 name: Evidence audit
@@ -24,7 +24,7 @@ jobs:
     steps:
       - name: Audit repository evidence
         id: evidencelint
-        uses: however-yir/evidencelint@v0.1.0
+        uses: however-yir/evidencelint@v0.2.0
         with:
           format: markdown
           output: evidencelint-report.md
@@ -32,7 +32,7 @@ jobs:
           token: ${{ github.token }}
 
       - name: Upload report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: evidencelint-report
           path: ${{ steps.evidencelint.outputs.report }}
@@ -50,6 +50,8 @@ token can read.
 | `format` | `markdown` | `text`, `json`, or `markdown` |
 | `output` | `evidencelint-report.md` | Report path in the workflow workspace |
 | `strict` | `false` | Exit non-zero for `failed` or `missing` rules |
+| `policy` | empty | Local `evidencelint-policy-v1` JSON file |
+| `baseline` | empty | Earlier JSON report; enables offline comparison mode |
 | `token` | `github.token` | Read-only API token |
 
 The caller controls token permissions. EvidenceLint only sends REST `GET`
@@ -60,3 +62,8 @@ requests and never writes the token into reports.
 Strict mode treats missing engineering evidence as a failing result. Enable it
 after reviewing the first report; profile repositories and non-distributable
 projects may intentionally lack Releases, environment templates, or tests.
+
+When `baseline` is supplied, strict mode fails only for a newly introduced
+Policy blocker. EvidenceLint itself still does not checkout a target repository;
+the workflow author is responsible for making a baseline or Policy file
+available in the workspace.

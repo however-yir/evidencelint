@@ -74,6 +74,7 @@ responses without network access.
 | M3 claim links | Sep 14-20 | README path, badge and release checks | seeded broken claims fail deterministically | M2 | complete Aug 31 |
 | M4 portfolio dogfood | Sep 21-27 | 15-repository matrix and action report | every owned repository has a timestamped result and classified action queue | M3 | complete Aug 31 |
 | M5 public MVP | Sep 28-Oct 11 | docs, package, Action, v0.1.0 | fresh install and public example pass | M4 | complete Aug 31 |
+| M6 policy and drift | Sep 1-10 | Policy, report compare, Action baseline, security gates, v0.2.0 | new blockers fail deterministically without clone | M5 | complete Aug 31 |
 
 The schedule assumes one developer at 70% capacity and includes roughly 20%
 buffer for GitHub API edge cases.
@@ -83,6 +84,10 @@ collector but does not replace M2-M3 rule coverage or the final M4 dogfood gate.
 
 M5 GitHub publication is complete. PyPI was deliberately excluded from the
 release scope.
+
+M6 keeps raw evidence separate from project policy and adds offline comparison
+so recurring audits can identify newly introduced blockers without a composite
+score or hosted service.
 
 ## Work breakdown and critical path
 
@@ -129,3 +134,5 @@ run alongside fixture expansion after the schema is stable.
   authorized token is available, without exposing credentials.
 - v0.1.0 includes a reproducible sample report and a documented limitations
   section.
+- v0.2.0 compares compatible reports deterministically, retains advisory
+  findings, and keeps strict mode focused on Policy blockers.

@@ -1,0 +1,17 @@
+name: Feature request
+description: Propose a bounded evidence-collection or reporting improvement.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Review problem
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Proposed evidence boundary
+      description: Explain which GitHub API evidence would support the proposal.
+    validations:
+      required: true

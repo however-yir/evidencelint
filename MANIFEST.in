@@ -1,5 +1,6 @@
 include action.yml
 include CHANGELOG.md
+include CODE_OF_CONDUCT.md
 include CONTRIBUTING.md
 include LIMITATIONS.md
 include RELEASE_CHECKLIST.md
@@ -11,3 +12,4 @@ recursive-include .github *.yml
 recursive-include docs *.md
 prune examples
 include examples/ragproof-report.json
+include examples/evidencelint-policy.json

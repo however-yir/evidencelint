@@ -16,8 +16,8 @@ class ReleaseAssetTests(unittest.TestCase):
         match = re.search(r'^version = "([^"]+)"$', pyproject, re.MULTILINE)
 
         self.assertIsNotNone(match)
-        self.assertEqual(match.group(1), "0.1.0")
-        self.assertEqual(evidencelint.__version__, "0.1.0")
+        self.assertEqual(match.group(1), "0.2.0")
+        self.assertEqual(evidencelint.__version__, "0.2.0")
         self.assertIn(
             'Repository = "https://github.com/however-yir/evidencelint"',
             pyproject,
@@ -30,6 +30,8 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertNotIn("git clone", action.lower())
         self.assertIn('PYTHONPATH="$GITHUB_ACTION_PATH/src"', action)
         self.assertIn('scan "$repository"', action)
+        self.assertIn('compare "$EVIDENCELINT_BASELINE"', action)
+        self.assertIn("actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97", action)
         self.assertIn("GITHUB_TOKEN", action)
 
     def test_ci_covers_supported_edges_and_clean_wheel_install(self) -> None:
@@ -38,7 +40,7 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertIn('python-version: ["3.9", "3.13"]', workflow)
         self.assertIn("python -m compileall -q src tests scripts", workflow)
         self.assertIn("python -m pip wheel --no-deps --wheel-dir dist .", workflow)
-        self.assertIn("evidencelint==0.1.0", workflow)
+        self.assertIn("evidencelint==0.2.0", workflow)
         self.assertIn("uses: ./", workflow)
 
     def test_release_smoke_uses_published_action_without_checkout(self) -> None:
@@ -47,10 +49,10 @@ class ReleaseAssetTests(unittest.TestCase):
         )
 
         self.assertIn("workflow_dispatch:", workflow)
-        self.assertIn("uses: however-yir/evidencelint@v0.1.0", workflow)
+        self.assertIn("uses: however-yir/evidencelint@v0.2.0", workflow)
         self.assertNotIn("actions/checkout", workflow)
         self.assertNotIn("git clone", workflow.lower())
-        self.assertIn('report["schema_version"] == "evidencelint-report-v1"', workflow)
+        self.assertIn('report["schema_version"] == "evidencelint-report-v2"', workflow)
 
     def test_release_smoke_uploads_short_lived_report_artifact(self) -> None:
         workflow = (ROOT / ".github/workflows/release-smoke.yml").read_text(
@@ -91,15 +93,15 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertIn("path: dist/*", workflow)
 
     def test_official_github_actions_are_pinned_to_full_commits(self) -> None:
-        workflow_paths = sorted((ROOT / ".github/workflows").glob("*.yml"))
+        workflow_paths = sorted((ROOT / ".github/workflows").glob("*.yml")) + [ROOT / "action.yml"]
         references: list[tuple[str, str, str]] = []
 
         for path in workflow_paths:
             workflow = path.read_text(encoding="utf-8")
             for action, revision in re.findall(
-                r"uses:\s+(actions/[a-z0-9-]+)@([^\s#]+)", workflow
+                r"uses:\s+((?:actions|github)/[a-z0-9-]+)@([^\s#]+)", workflow
             ):
-                references.append((path.name, action, revision))
+                references.append((str(path.relative_to(ROOT)), action, revision))
 
         self.assertTrue(references)
         for path, action, revision in references:
@@ -110,10 +112,10 @@ class ReleaseAssetTests(unittest.TestCase):
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
 
         self.assertIn(
-            "https://github.com/however-yir/evidencelint/releases/tag/v0.1.0",
+            "https://github.com/however-yir/evidencelint/releases/tag/v0.2.0",
             readme,
         )
-        self.assertIn("uses: however-yir/evidencelint@v0.1.0", readme)
+        self.assertIn("uses: however-yir/evidencelint@v0.2.0", readme)
         self.assertNotIn("actions/checkout", readme)
 
     def test_private_account_reports_are_excluded_from_public_release(self) -> None:

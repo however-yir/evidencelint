@@ -39,6 +39,10 @@ running, reviewing, or security-testing repository code.
   evidence paths and raw README or source content.
 - Reports are point-in-time snapshots and should record their capture time when
   used in reviews or portfolio materials.
+- Policy files change whether an exposed `missing` or `failed` status blocks a
+  workflow; they do not change, hide, or verify the underlying evidence.
+- Comparison requires two reports for the same repository and rule-set version;
+  it compares evidence statuses, not source code or historical reliability.
 
 ## Action boundary
 

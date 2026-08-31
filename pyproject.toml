@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "evidencelint"
-version = "0.1.0"
+version = "0.2.0"
 description = "No-clone, evidence-first audits for GitHub AI projects"
 readme = "README.md"
 requires-python = ">=3.9"

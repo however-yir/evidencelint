@@ -1,0 +1,9 @@
+{
+  "schema_version": "evidencelint-policy-v1",
+  "rules": {
+    "security.environment_template": {
+      "level": "advisory",
+      "reason": "Use this only when a project documents optional environment tokens without loading dotenv files."
+    }
+  }
+}

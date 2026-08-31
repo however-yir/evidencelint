@@ -111,7 +111,7 @@ class BatchTests(unittest.TestCase):
             if item["visibility"] == "private"
         ]
         self.assertTrue(all(not item["evidence"] for item in private_actions))
-        self.assertEqual(payload["schema_version"], "evidencelint-batch-report-v2")
+        self.assertEqual(payload["schema_version"], "evidencelint-batch-report-v3")
         rendered = render_batch(report, "markdown")
         self.assertIn("## Action queue", rendered)
         self.assertIn("### Confirmed defects", rendered)

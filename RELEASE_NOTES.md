@@ -1,4 +1,4 @@
-# EvidenceLint v0.1.0
+# EvidenceLint v0.2.0
 
 EvidenceLint is a zero-runtime-dependency CLI and composite GitHub Action for
 auditing the current engineering evidence of GitHub AI projects without
@@ -18,10 +18,16 @@ cloning or executing target code.
 - Redacts evidence paths from private-repository reports and excludes local
   account-wide examples from public release artifacts.
 - Includes a no-clone composite Action and Python 3.9/3.13 development CI.
+- Adds transparent Policy evaluation: advisory findings remain visible while
+  required missing or failed evidence controls strict mode.
+- Adds offline comparison between compatible JSON reports, with deterministic
+  new-blocker and resolved-blocker classifications.
+- Adds optional Policy and baseline inputs to the composite Action.
 
 ## Verification evidence
 
-- 28 offline tests pass on Python 3.9 and Python 3.13.
+- 56 offline tests pass on Python 3.9 and Python 3.13.
+- Ruff, mypy, and 90% coverage are required in CI.
 - Wheel and source distributions build without warnings.
 - The wheel installs in a clean Python 3.9 environment with no runtime
   dependencies and completes a live public-repository scan.

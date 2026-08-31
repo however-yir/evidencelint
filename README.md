@@ -19,9 +19,10 @@ score.
 
 ## Current milestone
 
-[v0.1.0](https://github.com/however-yir/evidencelint/releases/tag/v0.1.0) is
-the first GitHub release. The current pipeline supports both one repository
-and every repository owned by the authenticated account:
+[v0.2.0](https://github.com/however-yir/evidencelint/releases/tag/v0.2.0) adds
+transparent policy evaluation and offline report comparison. The current
+pipeline supports both one repository and every repository owned by the
+authenticated account:
 
 ```text
 GitHub REST API -> evidence snapshot -> deterministic checks
@@ -37,7 +38,7 @@ validation rejects accidental rule renames, dimension changes, and undeclared
 statuses; regression fixtures prove that every declared status is reachable.
 V2 verifies current-repository GitHub Actions badge targets against the Git
 tree and README release-tag links against paginated published Releases.
-Batch schema v2 adds a deterministic action queue that separates confirmed
+Batch schema v3 adds a deterministic action queue that separates confirmed
 defects, collection blockers, review items, and evidence gaps without producing
 a subjective composite score.
 
@@ -47,7 +48,7 @@ Install the wheel attached to the GitHub Release:
 
 ```bash
 python3 -m pip install \
-  https://github.com/however-yir/evidencelint/releases/download/v0.1.0/evidencelint-0.1.0-py3-none-any.whl
+  https://github.com/however-yir/evidencelint/releases/download/v0.2.0/evidencelint-0.2.0-py3-none-any.whl
 evidencelint --version
 ```
 
@@ -59,7 +60,7 @@ python3 -m venv .venv
 .venv/bin/evidencelint --version
 ```
 
-The package has not been published to PyPI. `pip install evidencelint==0.1.0`
+The package has not been published to PyPI. `pip install evidencelint==0.2.0`
 is therefore intentionally unsupported for this release.
 
 ## Try it
@@ -69,6 +70,7 @@ evidencelint scan however-yir/ragproof
 evidencelint scan however-yir/ragproof --format json
 evidencelint scan however-yir/ragproof --output evidence.json
 evidencelint batch --format markdown --output portfolio.md
+evidencelint compare baseline.json current.json --strict
 ```
 
 Authentication is optional for public repositories. EvidenceLint checks
@@ -80,6 +82,14 @@ account and all repositories owned by it, including authorized private
 repositories. It uses four workers by default; `--workers` accepts 1 through 8.
 Use `--strict` when missing evidence, failed rules, or collection failures
 should produce a non-zero exit status.
+
+## Policy and comparison
+
+A Policy can make a rule advisory without hiding its Finding. This keeps
+project-specific decisions separate from collected evidence. `compare` reads
+two local JSON reports without network access and exits non-zero only for a new
+Policy blocker when used with `--strict`. See [docs/policy.md](docs/policy.md)
+and [docs/comparison.md](docs/comparison.md).
 
 ## GitHub Action
 
@@ -95,7 +105,7 @@ jobs:
   evidence-audit:
     runs-on: ubuntu-latest
     steps:
-      - uses: however-yir/evidencelint@v0.1.0
+      - uses: however-yir/evidencelint@v0.2.0
         with:
           token: ${{ github.token }}
 ```
@@ -124,7 +134,7 @@ repository names and aggregate metadata and should not be published by default.
 
 ## Scope fence
 
-v0.1.0 stays read-only and remote. Cloning, runtime execution, automatic fixes,
+v0.2.0 stays read-only and remote. Cloning, runtime execution, automatic fixes,
 subjective originality scores, hosted dashboards, and GitHub mutations are on
 the explicit not-yet list.
 

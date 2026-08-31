@@ -13,12 +13,12 @@ class ReleaseVersionTests(unittest.TestCase):
     def test_branch_and_matching_tag_use_the_package_version(self) -> None:
         pyproject = ROOT / "pyproject.toml"
 
-        self.assertEqual(resolve_version(pyproject, "branch", "main"), "0.1.0")
-        self.assertEqual(resolve_version(pyproject, "tag", "v0.1.0"), "0.1.0")
+        self.assertEqual(resolve_version(pyproject, "branch", "main"), "0.2.0")
+        self.assertEqual(resolve_version(pyproject, "tag", "v0.2.0"), "0.2.0")
 
     def test_mismatched_tag_is_rejected(self) -> None:
-        with self.assertRaisesRegex(ValueError, "v0.1.1 does not match v0.1.0"):
-            resolve_version(ROOT / "pyproject.toml", "tag", "v0.1.1")
+        with self.assertRaisesRegex(ValueError, "v0.2.1 does not match v0.2.0"):
+            resolve_version(ROOT / "pyproject.toml", "tag", "v0.2.1")
 
 
 if __name__ == "__main__":

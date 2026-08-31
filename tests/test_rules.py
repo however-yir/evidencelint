@@ -356,7 +356,7 @@ class RuleTests(unittest.TestCase):
         report = evaluate(snapshot(readme="# SECRET-LIKE-CONTENT\n"))
         payload = json.loads(render(report, "json"))
         self.assertNotIn("SECRET-LIKE-CONTENT", json.dumps(payload))
-        self.assertEqual(payload["schema_version"], "evidencelint-report-v1")
+        self.assertEqual(payload["schema_version"], "evidencelint-report-v2")
         self.assertEqual(payload["rule_set_version"], "evidencelint-rules-v2")
         self.assertIn("Rule set: evidencelint-rules-v2", render(report, "text"))
         self.assertIn("Rule set: `evidencelint-rules-v2`", render(report, "markdown"))

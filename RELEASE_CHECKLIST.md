@@ -1,11 +1,13 @@
-# v0.1.0 release verification
+# v0.2.0 release verification
 
 The GitHub release is published from `however-yir/evidencelint`. PyPI
-publication is intentionally outside the v0.1.0 scope.
+publication is intentionally outside the v0.2.0 scope.
 
 ## Completed locally
 
-- Package and CLI versions are `0.1.0`.
+- Package and CLI versions are `0.2.0`.
+- Policy and comparison tests pass on Python 3.9 and Python 3.13.
+- Ruff, mypy, and 90% coverage gates pass.
 - Python 3.9 and 3.13 CI jobs are defined.
 - Offline tests and bytecode compilation are required by CI.
 - Wheel construction and clean-wheel installation are required by CI.
@@ -23,7 +25,7 @@ publication is intentionally outside the v0.1.0 scope.
 2. Initial commit pushed after confirming ignored local reports were not staged.
 3. Python, package, and Action smoke jobs passed on GitHub-hosted CI using
    Node.js 24-compatible official Actions.
-4. Exact `v0.1.0` tag pushed from the verified default-branch commit.
+4. Exact `v0.2.0` tag pushed from the verified default-branch commit.
 5. GitHub Release created with wheel and source-distribution assets.
 6. Repository, tag, Release assets, and default-branch checks read back through
    the GitHub API.

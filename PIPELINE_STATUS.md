@@ -4,7 +4,7 @@ Updated: 2026-08-31
 
 ## Current stage
 
-**M5: GitHub v0.1.0 — published**
+**M6: GitHub v0.2.0 — release candidate**
 
 ## Completed
 
@@ -13,7 +13,7 @@ Updated: 2026-08-31
 - Project package and command entry point defined.
 - Read-only GitHub collector and versioned report schema implemented.
 - Eleven deterministic rules and three output formats implemented.
-- Thirty-six offline tests pass on Python 3.9 and Python 3.13.
+- Fifty-six offline tests pass on Python 3.9 and Python 3.13.
 - Live smoke checks passed against `ragproof`, `forgepilot-studio`, and an
   authorized private repository without cloning or mutation.
 - Check-run and owned-repository pagination implemented beyond 100 items.
@@ -44,7 +44,7 @@ Updated: 2026-08-31
   ran the installed CLI, and completed a live `ragproof` scan.
 - A curated portfolio action plan distinguishes must-fix defects from optional
   showcase improvements without inflating repository claims.
-- Package and CLI versions are synchronized at `0.1.0`.
+- Package and CLI versions are synchronized at `0.2.0`.
 - The composite Action preserves the no-clone boundary, validates inputs, and
   passed a local equivalent live run against `ragproof`.
 - Development CI covers Python 3.9 and 3.13, compilation, warning-free package
@@ -57,7 +57,7 @@ Updated: 2026-08-31
   and completed a live public-repository scan.
 - Local account-wide reports are ignored from version control and excluded from
   source distributions to avoid exposing private repository names.
-- A manual consumer smoke workflow pins the published `v0.1.0` Action and
+- A manual consumer smoke workflow targets the pending published `v0.2.0` Action and
   performs no source checkout.
 - The README links the exact GitHub Release and exposes a copyable
   least-privilege Action example.
@@ -69,17 +69,22 @@ Updated: 2026-08-31
   offline matching and mismatch regressions.
 - Future wheel and source distributions receive a published `SHA256SUMS` that
   is verified before installation on either supported Python edge.
+- Policy evaluation keeps evidence findings visible while allowing documented
+  advisory rules to stay out of a project's strict gate.
+- Offline comparison identifies only new Policy blockers as strict regressions.
+- CI enforces Ruff, mypy, and 90% coverage; the composite Action's own Python
+  setup dependency is pinned to a reviewed full commit.
 
 ## Publication status
 
-The public GitHub repository, verified `v0.1.0` tag, and GitHub Release are
-available at `however-yir/evidencelint`. PyPI publication was intentionally not
-performed.
+The public GitHub repository and verified `v0.1.0` tag are available at
+`however-yir/evidencelint`. The v0.2.0 GitHub Release is pending final CI and
+artifact verification. PyPI publication remains intentionally out of scope.
 
 ## Next checkpoint
 
 Use live feedback from the GitHub Action and public users to decide whether a
-v0.1.1 maintenance release or PyPI trusted publishing has measured value.
+v0.3 comparison enhancement or PyPI trusted publishing has measured value.
 
 ## Blockers
 

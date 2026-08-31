@@ -1,9 +1,20 @@
 # Changelog
 
-## Unreleased
+## 0.2.0 - 2026-08-31
+
+- Add transparent `evidencelint-policy-v1` evaluation: advisory findings remain
+  visible while only required missing or failed evidence blocks strict mode.
+- Add offline `compare` with deterministic new-blocker and resolved-blocker
+  classification for compatible JSON reports.
+- Add optional Policy and baseline inputs to the composite Action without
+  changing its no-clone target boundary.
+- Upgrade report and batch schemas to v2 and v3, pin the composite Action's
+  Python setup dependency, and enforce lint, typing, and 90% coverage in CI.
+- Add Policy, comparison, and CLI regressions, bringing the offline suite to
+  56 tests.
 
 - Add a manual consumer smoke workflow that runs the published
-  `however-yir/evidencelint@v0.1.0` Action without checking out source code.
+  `however-yir/evidencelint@v0.2.0` Action without checking out source code.
 - Add regression coverage for the pinned Release smoke path, bringing the
   offline suite to 29 tests.
 - Add an explicit `v0.1.0` Release link and a copyable least-privilege Action

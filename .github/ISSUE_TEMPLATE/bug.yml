@@ -1,0 +1,24 @@
+name: Bug report
+description: Report a reproducible EvidenceLint defect without exposing tokens or private paths.
+labels: [bug]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: EvidenceLint version
+    validations:
+      required: true
+  - type: dropdown
+    id: visibility
+    attributes:
+      label: Target visibility
+      options: [public, private]
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Minimal command and redacted output
+      description: Never include tokens, private URLs, or unredacted private evidence.
+    validations:
+      required: true
