@@ -13,7 +13,7 @@ Updated: 2026-08-31
 - Project package and command entry point defined.
 - Read-only GitHub collector and versioned report schema implemented.
 - Eleven deterministic rules and three output formats implemented.
-- Twenty-eight offline tests pass on Python 3.9 and Python 3.13.
+- Twenty-nine offline tests pass on Python 3.9 and Python 3.13.
 - Live smoke checks passed against `ragproof`, `forgepilot-studio`, and an
   authorized private repository without cloning or mutation.
 - Check-run and owned-repository pagination implemented beyond 100 items.
@@ -57,6 +57,8 @@ Updated: 2026-08-31
   and completed a live public-repository scan.
 - Local account-wide reports are ignored from version control and excluded from
   source distributions to avoid exposing private repository names.
+- A manual consumer smoke workflow pins the published `v0.1.0` Action and
+  performs no source checkout.
 
 ## Publication status
 

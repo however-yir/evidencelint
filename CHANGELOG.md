@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add a manual consumer smoke workflow that runs the published
+  `however-yir/evidencelint@v0.1.0` Action without checking out source code.
+- Add regression coverage for the pinned Release smoke path, bringing the
+  offline suite to 29 tests.
+
 ## 0.1.0 - 2026-08-31
 
 - Add the first `scan` vertical slice for read-only GitHub evidence collection.

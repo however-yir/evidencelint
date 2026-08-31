@@ -40,6 +40,17 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertIn("evidencelint==0.1.0", workflow)
         self.assertIn("uses: ./", workflow)
 
+    def test_release_smoke_uses_published_action_without_checkout(self) -> None:
+        workflow = (ROOT / ".github/workflows/release-smoke.yml").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("workflow_dispatch:", workflow)
+        self.assertIn("uses: however-yir/evidencelint@v0.1.0", workflow)
+        self.assertNotIn("actions/checkout", workflow)
+        self.assertNotIn("git clone", workflow.lower())
+        self.assertIn('report["schema_version"] == "evidencelint-report-v1"', workflow)
+
     def test_private_account_reports_are_excluded_from_public_release(self) -> None:
         ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
         manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")
