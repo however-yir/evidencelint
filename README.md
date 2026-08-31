@@ -19,8 +19,9 @@ score.
 
 ## Current milestone
 
-v0.1.0 is the first GitHub release. The current pipeline supports both one
-repository and every repository owned by the authenticated account:
+[v0.1.0](https://github.com/however-yir/evidencelint/releases/tag/v0.1.0) is
+the first GitHub release. The current pipeline supports both one repository
+and every repository owned by the authenticated account:
 
 ```text
 GitHub REST API -> evidence snapshot -> deterministic checks
@@ -83,7 +84,24 @@ should produce a non-zero exit status.
 ## GitHub Action
 
 The included composite Action audits through the GitHub API and does not
-checkout the target repository. See [docs/github-action.md](docs/github-action.md).
+checkout the target repository:
+
+```yaml
+permissions:
+  contents: read
+  checks: read
+
+jobs:
+  evidence-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: however-yir/evidencelint@v0.1.0
+        with:
+          token: ${{ github.token }}
+```
+
+See [docs/github-action.md](docs/github-action.md) for report upload, scheduled
+runs, target selection, and strict mode.
 
 ## Reproducible examples
 

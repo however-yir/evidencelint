@@ -51,6 +51,16 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertNotIn("git clone", workflow.lower())
         self.assertIn('report["schema_version"] == "evidencelint-report-v1"', workflow)
 
+    def test_readme_exposes_release_and_copyable_action_usage(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+
+        self.assertIn(
+            "https://github.com/however-yir/evidencelint/releases/tag/v0.1.0",
+            readme,
+        )
+        self.assertIn("uses: however-yir/evidencelint@v0.1.0", readme)
+        self.assertNotIn("actions/checkout", readme)
+
     def test_private_account_reports_are_excluded_from_public_release(self) -> None:
         ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
         manifest = (ROOT / "MANIFEST.in").read_text(encoding="utf-8")

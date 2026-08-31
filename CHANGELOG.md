@@ -6,6 +6,10 @@
   `however-yir/evidencelint@v0.1.0` Action without checking out source code.
 - Add regression coverage for the pinned Release smoke path, bringing the
   offline suite to 29 tests.
+- Add an explicit `v0.1.0` Release link and a copyable least-privilege Action
+  example to the README.
+- Add regression coverage for the public README usage contract, bringing the
+  offline suite to 30 tests.
 
 ## 0.1.0 - 2026-08-31
 
