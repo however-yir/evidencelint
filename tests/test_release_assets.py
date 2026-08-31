@@ -57,7 +57,7 @@ class ReleaseAssetTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-        self.assertIn("uses: actions/upload-artifact@v7", workflow)
+        self.assertIn("uses: actions/upload-artifact@", workflow)
         self.assertIn("path: ${{ steps.audit.outputs.report }}", workflow)
         self.assertIn("retention-days: 7", workflow)
 
@@ -70,8 +70,8 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertIn("python scripts/release_version.py", workflow)
         self.assertIn("build==1.6.0", workflow)
         self.assertIn('python-version: ["3.9", "3.13"]', workflow)
-        self.assertIn("uses: actions/upload-artifact@v7", workflow)
-        self.assertIn("uses: actions/download-artifact@v8", workflow)
+        self.assertIn("uses: actions/upload-artifact@", workflow)
+        self.assertIn("uses: actions/download-artifact@", workflow)
         self.assertIn("if: github.ref_type == 'tag'", workflow)
         self.assertIn("contents: write", workflow)
         self.assertIn("gh release create", workflow)
@@ -89,6 +89,22 @@ class ReleaseAssetTests(unittest.TestCase):
         )
         self.assertIn("sha256sum --check SHA256SUMS", workflow)
         self.assertIn("path: dist/*", workflow)
+
+    def test_official_github_actions_are_pinned_to_full_commits(self) -> None:
+        workflow_paths = sorted((ROOT / ".github/workflows").glob("*.yml"))
+        references: list[tuple[str, str, str]] = []
+
+        for path in workflow_paths:
+            workflow = path.read_text(encoding="utf-8")
+            for action, revision in re.findall(
+                r"uses:\s+(actions/[a-z0-9-]+)@([^\s#]+)", workflow
+            ):
+                references.append((path.name, action, revision))
+
+        self.assertTrue(references)
+        for path, action, revision in references:
+            with self.subTest(workflow=path, action=action):
+                self.assertRegex(revision, r"^[0-9a-f]{40}$")
 
     def test_readme_exposes_release_and_copyable_action_usage(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")

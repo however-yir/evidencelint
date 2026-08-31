@@ -13,7 +13,7 @@ Updated: 2026-08-31
 - Project package and command entry point defined.
 - Read-only GitHub collector and versioned report schema implemented.
 - Eleven deterministic rules and three output formats implemented.
-- Thirty-five offline tests pass on Python 3.9 and Python 3.13.
+- Thirty-six offline tests pass on Python 3.9 and Python 3.13.
 - Live smoke checks passed against `ragproof`, `forgepilot-studio`, and an
   authorized private repository without cloning or mutation.
 - Check-run and owned-repository pagination implemented beyond 100 items.
@@ -49,8 +49,8 @@ Updated: 2026-08-31
   passed a local equivalent live run against `ragproof`.
 - Development CI covers Python 3.9 and 3.13, compilation, warning-free package
   builds, clean-wheel installation, and Action smoke verification.
-- GitHub's official checkout, Python setup, and artifact upload integrations
-  use their Node.js 24-compatible v7 releases.
+- GitHub's official checkout, Python setup, upload, and download integrations
+  use reviewed Node.js 24-compatible releases pinned to full commits.
 - Warning-free wheel and source distributions were built with MIT SPDX metadata
   and `Requires-Python: >=3.9`.
 - A clean environment installed only the built wheel, passed dependency checks,

@@ -14,6 +14,8 @@ branch.
 - EvidenceLint does not clone or execute the target repository.
 - The composite Action validates input shape and passes values as shell-array
   arguments rather than evaluating user-controlled strings.
+- Repository workflows pin GitHub-authored Actions to reviewed full commit
+  identifiers; version comments preserve the corresponding upstream release.
 
 Report a suspected credential leak or unsafe API behavior privately to the
 maintainer before opening a public issue.

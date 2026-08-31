@@ -27,6 +27,10 @@
   before candidate installation, and publish it with tag-created Releases.
 - Add regression coverage for checksum delivery, bringing the offline suite
   to 35 tests.
+- Pin every GitHub-authored workflow Action to a reviewed full commit while
+  retaining its upstream release version as an audit comment.
+- Add a repository-wide pinning regression, bringing the offline suite to 36
+  tests.
 
 ## 0.1.0 - 2026-08-31
 

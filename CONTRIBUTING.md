@@ -25,6 +25,9 @@ the workflow receives permission to create the GitHub Release. PyPI remains a
 separate, intentionally unsupported publication path.
 Candidate installation is preceded by verification of the generated
 `SHA256SUMS`; the same checksum file is included in tag-created Releases.
+GitHub-authored Actions are pinned to full commit identifiers. Update a pin
+only after reviewing the corresponding upstream release, and keep its version
+comment synchronized for auditability.
 
 ## Rule design
 
