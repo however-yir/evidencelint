@@ -60,6 +60,22 @@ class ReleaseAssetTests(unittest.TestCase):
         self.assertIn("path: ${{ steps.audit.outputs.report }}", workflow)
         self.assertIn("retention-days: 7", workflow)
 
+    def test_future_release_is_verified_before_least_privilege_publish(self) -> None:
+        workflow = (ROOT / ".github/workflows/release.yml").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn("permissions: {}", workflow)
+        self.assertIn("build==1.6.0", workflow)
+        self.assertIn('python-version: ["3.9", "3.13"]', workflow)
+        self.assertIn("uses: actions/upload-artifact@v7", workflow)
+        self.assertIn("uses: actions/download-artifact@v8", workflow)
+        self.assertIn("if: github.ref_type == 'tag'", workflow)
+        self.assertIn("contents: write", workflow)
+        self.assertIn("gh release create", workflow)
+        self.assertIn("--verify-tag", workflow)
+        self.assertNotIn("pypi", workflow.lower())
+
     def test_readme_exposes_release_and_copyable_action_usage(self) -> None:
         readme = (ROOT / "README.md").read_text(encoding="utf-8")
 

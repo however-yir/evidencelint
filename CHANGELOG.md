@@ -14,6 +14,11 @@
   artifact using the Action's declared report output.
 - Add regression coverage for the Artifact delivery contract, bringing the
   offline suite to 31 tests.
+- Add a least-privilege future-Release workflow with manual dry runs, exact
+  tag/package version validation, Python 3.9/3.13 wheel verification, and
+  tag-only GitHub Release creation.
+- Add regression coverage for the future-Release contract, bringing the
+  offline suite to 32 tests.
 
 ## 0.1.0 - 2026-08-31
 

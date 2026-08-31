@@ -18,6 +18,12 @@ Release-facing changes must also keep the version in `pyproject.toml` and
 `src/evidencelint/__init__.py` synchronized, preserve Python 3.9 compatibility,
 and pass the no-clone Action boundary tests.
 
+Run the `Future release` workflow manually before publishing a new version.
+Manual runs build and verify the candidate on Python 3.9 and 3.13 without
+publishing. A later `vX.Y.Z` tag must exactly match the package version before
+the workflow receives permission to create the GitHub Release. PyPI remains a
+separate, intentionally unsupported publication path.
+
 ## Rule design
 
 A rule should:

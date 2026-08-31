@@ -1,0 +1,115 @@
+name: Future release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Validate package and tag versions
+        id: package
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
+          match = re.search(r'^version = "([^"]+)"$', pyproject, re.MULTILINE)
+          if match is None:
+              raise SystemExit("pyproject.toml does not expose a package version")
+
+          version = match.group(1)
+          if os.environ["GITHUB_REF_TYPE"] == "tag":
+              expected = f"v{version}"
+              if os.environ["GITHUB_REF_NAME"] != expected:
+                  raise SystemExit(
+                      f"tag {os.environ['GITHUB_REF_NAME']} does not match {expected}"
+                  )
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"version={version}\n")
+          PY
+
+      - name: Build wheel and source distribution
+        run: |
+          python -m pip install --disable-pip-version-check build==1.6.0
+          python -m build --sdist --wheel --outdir dist
+
+      - name: Upload candidate distributions
+        uses: actions/upload-artifact@v7
+        with:
+          name: evidencelint-release-${{ github.sha }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 7
+
+  verify:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
+    steps:
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: actions/download-artifact@v8
+        with:
+          name: evidencelint-release-${{ github.sha }}
+          path: dist
+
+      - name: Install and verify the candidate wheel
+        shell: bash
+        run: |
+          environment="/tmp/evidencelint-release-${{ matrix.python-version }}"
+          python -m venv "$environment"
+          "$environment/bin/python" -m pip install \
+            --no-index --find-links dist \
+            "evidencelint==${{ needs.build.outputs.version }}"
+          "$environment/bin/python" -m pip check
+          observed="$($environment/bin/evidencelint --version)"
+          test "$observed" = "${{ needs.build.outputs.version }}"
+
+  publish:
+    if: github.ref_type == 'tag'
+    needs: [build, verify]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: evidencelint-release-${{ github.sha }}
+          path: dist
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --verify-tag \
+            --title "EvidenceLint $GITHUB_REF_NAME" \
+            --generate-notes
