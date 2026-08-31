@@ -1,0 +1,90 @@
+name: EvidenceLint audit
+description: Audit current GitHub repository evidence without cloning or executing target code
+author: however-yir
+
+branding:
+  icon: check-circle
+  color: blue
+
+inputs:
+  repository:
+    description: Repository to audit in owner/name form; defaults to the workflow repository
+    required: false
+    default: ""
+  format:
+    description: "Report format: text, json, or markdown"
+    required: false
+    default: markdown
+  output:
+    description: Report output path in the workflow workspace
+    required: false
+    default: evidencelint-report.md
+  strict:
+    description: Exit non-zero when a rule is failed or missing
+    required: false
+    default: "false"
+  token:
+    description: GitHub token used only for read-only API requests
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  report:
+    description: Path written by EvidenceLint
+    value: ${{ steps.audit.outputs.report }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.9"
+
+    - name: Audit repository evidence
+      id: audit
+      shell: bash
+      env:
+        EVIDENCELINT_REPOSITORY: ${{ inputs.repository }}
+        EVIDENCELINT_FORMAT: ${{ inputs.format }}
+        EVIDENCELINT_OUTPUT: ${{ inputs.output }}
+        EVIDENCELINT_STRICT: ${{ inputs.strict }}
+        GITHUB_TOKEN: ${{ inputs.token }}
+      run: |
+        set -euo pipefail
+
+        repository="${EVIDENCELINT_REPOSITORY:-${GITHUB_REPOSITORY:-}}"
+        if [[ -z "$repository" ]]; then
+          echo "EvidenceLint requires an owner/name repository target." >&2
+          exit 2
+        fi
+
+        case "$EVIDENCELINT_FORMAT" in
+          text|json|markdown) ;;
+          *)
+            echo "EvidenceLint format must be text, json, or markdown." >&2
+            exit 2
+            ;;
+        esac
+
+        if [[ -z "$EVIDENCELINT_OUTPUT" || "$EVIDENCELINT_OUTPUT" == *$'\n'* ]]; then
+          echo "EvidenceLint output must be a non-empty single-line path." >&2
+          exit 2
+        fi
+
+        arguments=(
+          scan "$repository"
+          --format "$EVIDENCELINT_FORMAT"
+          --output "$EVIDENCELINT_OUTPUT"
+        )
+        case "$EVIDENCELINT_STRICT" in
+          true) arguments+=(--strict) ;;
+          false) ;;
+          *)
+            echo "EvidenceLint strict must be true or false." >&2
+            exit 2
+            ;;
+        esac
+
+        PYTHONPATH="$GITHUB_ACTION_PATH/src" python -m evidencelint "${arguments[@]}"
+        printf 'report=%s\n' "$EVIDENCELINT_OUTPUT" >> "$GITHUB_OUTPUT"

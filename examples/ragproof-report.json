@@ -1,0 +1,195 @@
+{
+  "current_ci": {
+    "accepted_other": 0,
+    "failed": 0,
+    "pending": 0,
+    "success": 13,
+    "total": 13
+  },
+  "findings": [
+    {
+      "detail": "A decodable repository README is present.",
+      "dimension": "documentation",
+      "evidence": [
+        "README"
+      ],
+      "rule_id": "docs.readme",
+      "status": "verified",
+      "title": "README availability"
+    },
+    {
+      "detail": "GitHub metadata or the repository tree exposes license evidence.",
+      "dimension": "delivery",
+      "evidence": [
+        "SPDX:MIT",
+        "LICENSE"
+      ],
+      "rule_id": "delivery.license",
+      "status": "verified",
+      "title": "License evidence"
+    },
+    {
+      "detail": "All 13 current check runs completed acceptably.",
+      "dimension": "quality",
+      "evidence": [
+        "2e2d745b16c3"
+      ],
+      "rule_id": "quality.current_ci",
+      "status": "verified",
+      "title": "Current default-branch CI"
+    },
+    {
+      "detail": "Found 5 matching path(s) in the remote tree.",
+      "dimension": "quality",
+      "evidence": [
+        ".github/workflows/action-pin-review.yml",
+        ".github/workflows/ci.yml",
+        ".github/workflows/codeql.yml",
+        ".github/workflows/docs.yml",
+        ".github/workflows/release.yml"
+      ],
+      "rule_id": "quality.workflows",
+      "status": "verified",
+      "title": "Workflow definitions"
+    },
+    {
+      "detail": "All 3 current-repository workflow badge targets exist.",
+      "dimension": "documentation",
+      "evidence": [
+        ".github/workflows/ci.yml",
+        ".github/workflows/docs.yml",
+        ".github/workflows/codeql.yml"
+      ],
+      "rule_id": "docs.workflow_badges",
+      "status": "verified",
+      "title": "Workflow badge targets"
+    },
+    {
+      "detail": "Found 19 matching path(s) in the remote tree.",
+      "dimension": "quality",
+      "evidence": [
+        "tests/__init__.py",
+        "tests/fixtures/runs/v0.3.x.json",
+        "tests/fixtures/runs/v0.4.0.json",
+        "tests/fixtures/runs/v0.4.1.json",
+        "tests/fixtures/sarif-core.schema.json"
+      ],
+      "rule_id": "quality.tests",
+      "status": "verified",
+      "title": "Test assets"
+    },
+    {
+      "detail": "GitHub exposes a latest release.",
+      "dimension": "delivery",
+      "evidence": [
+        "v0.4.1"
+      ],
+      "rule_id": "delivery.release",
+      "status": "verified",
+      "title": "Release evidence"
+    },
+    {
+      "detail": "No current-repository release-tag link was detected.",
+      "dimension": "delivery",
+      "evidence": [],
+      "rule_id": "delivery.release_links",
+      "status": "not_applicable",
+      "title": "README release links"
+    },
+    {
+      "detail": "Found 10 matching path(s) in the remote tree.",
+      "dimension": "ai_evidence",
+      "evidence": [
+        "docs/BENCHMARK.md",
+        "docs/PUBLIC_BENCHMARK_REPORT.md",
+        "examples/BENCHMARK_LICENSE.md",
+        "examples/benchmark-manifest.json",
+        "examples/public-http-benchmark.yaml"
+      ],
+      "rule_id": "ai.evaluation_assets",
+      "status": "verified",
+      "title": "AI evaluation assets"
+    },
+    {
+      "detail": "Found 1 matching path(s) in the remote tree.",
+      "dimension": "security",
+      "evidence": [
+        "SECURITY.md"
+      ],
+      "rule_id": "security.policy",
+      "status": "verified",
+      "title": "Security policy"
+    },
+    {
+      "detail": "Found 1 matching path(s) in the remote tree.",
+      "dimension": "security",
+      "evidence": [
+        ".env.example"
+      ],
+      "rule_id": "security.environment_template",
+      "status": "verified",
+      "title": "Environment template"
+    },
+    {
+      "detail": "No upstream-derived positioning was detected in the README.",
+      "dimension": "provenance",
+      "evidence": [],
+      "rule_id": "provenance.boundary",
+      "status": "not_applicable",
+      "title": "Upstream boundary"
+    },
+    {
+      "detail": "All 7 relative README links resolve in the current tree.",
+      "dimension": "documentation",
+      "evidence": [],
+      "rule_id": "docs.internal_links",
+      "status": "verified",
+      "title": "README internal links"
+    }
+  ],
+  "rule_set_version": "evidencelint-rules-v2",
+  "schema_version": "evidencelint-report-v1",
+  "snapshot": {
+    "api_rate_limit": {
+      "limit": 5000,
+      "remaining": 4499,
+      "reset_at": "2026-08-31T02:20:14+00:00",
+      "resource": "core",
+      "used": 501
+    },
+    "archived": false,
+    "captured_at": "2026-08-31T01:42:54.078380+00:00",
+    "check_run_count": 13,
+    "collection_issues": {},
+    "default_branch": "main",
+    "default_sha": "2e2d745b16c39501d0fc8120376dfa02a609aec7",
+    "fork": false,
+    "latest_release": "v0.4.1",
+    "path_count": 123,
+    "primary_language": "Python",
+    "release_tag_count": 0,
+    "repository": "however-yir/ragproof",
+    "topics": [
+      "ci",
+      "evaluation",
+      "faithfulness",
+      "llm",
+      "llm-as-judge",
+      "ollama",
+      "rag",
+      "rag-evaluation",
+      "regression-testing",
+      "retrieval"
+    ],
+    "tree_truncated": false,
+    "visibility": "public"
+  },
+  "summary": {
+    "failed": 0,
+    "missing": 0,
+    "not_applicable": 2,
+    "partial": 0,
+    "unavailable": 0,
+    "verified": 11
+  }
+}

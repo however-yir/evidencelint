@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "evidencelint"
+version = "0.1.0"
+description = "No-clone, evidence-first audits for GitHub AI projects"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "however-yir" }]
+keywords = ["github", "audit", "evidence", "ai-engineering", "cli"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/however-yir/evidencelint"
+Repository = "https://github.com/however-yir/evidencelint"
+Issues = "https://github.com/however-yir/evidencelint/issues"
+Changelog = "https://github.com/however-yir/evidencelint/blob/main/CHANGELOG.md"
+
+[project.scripts]
+evidencelint = "evidencelint.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+testpaths = ["tests"]

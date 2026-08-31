@@ -1,0 +1,12 @@
+include action.yml
+include CHANGELOG.md
+include CONTRIBUTING.md
+include LIMITATIONS.md
+include RELEASE_CHECKLIST.md
+include RELEASE_NOTES.md
+include RULES.md
+include SECURITY.md
+recursive-include .github *.yml
+recursive-include docs *.md
+prune examples
+include examples/ragproof-report.json

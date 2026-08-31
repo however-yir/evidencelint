@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run offline tests
+        run: python -m unittest discover -s tests -v
+        env:
+          PYTHONPATH: src
+      - name: Compile package and tests
+        run: python -m compileall -q src tests
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
+      - name: Build wheel
+        run: python -m pip wheel --no-deps --wheel-dir dist .
+      - name: Install wheel in a clean environment
+        run: |
+          python -m venv /tmp/evidencelint-release-check
+          /tmp/evidencelint-release-check/bin/python -m pip install \
+            --no-index --find-links dist evidencelint==0.1.0
+          cd /tmp
+          /tmp/evidencelint-release-check/bin/evidencelint --version
+
+  action-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the local no-clone action
+        id: audit
+        uses: ./
+        with:
+          format: json
+          output: /tmp/evidencelint-action-report.json
+          token: ${{ github.token }}
+      - name: Verify action output
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          report = json.loads(
+              Path("/tmp/evidencelint-action-report.json").read_text(encoding="utf-8")
+          )
+          assert report["snapshot"]["repository"] == "${{ github.repository }}"
+          assert report["rule_set_version"] == "evidencelint-rules-v2"
+          PY

@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+build/
+dist/
+evidence.json
+
+# Local account-wide reports may reveal private repository names or metadata.
+examples/however-yir-action-plan.md
+examples/however-yir-portfolio.json
+examples/however-yir-portfolio.md
